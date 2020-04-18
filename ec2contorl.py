@@ -36,3 +36,16 @@ class Ec2Control():
                 if instance['State']['Name'] != 'terminated':
                     print("PublicIP: " + instance["PublicIpAddress"])
                     print("PrivateIP: " + instance["PrivateIpAddress"])
+
+
+    def terminate_all_instances():
+        ec2 = boto3.client('ec2')
+        response = ec2.describe_instances()
+        instance_list = []
+        for i in response['Reservations']:
+            for instance in i['Instances']:
+                if instance['State']['Name'] != 'terminated':
+                    instance_list.append(instance['InstanceId'])
+        response2 = ec2.terminate_instances(InstanceIds = instance_list, DryRun = False)
+        print(response2)
+        pass
